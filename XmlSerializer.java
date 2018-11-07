@@ -31,6 +31,10 @@ final class XmlSerializer implements Serializer {
 			sb.append("<" + objectName.getSimpleName() + ">\n");
 
 			for(Field field : fields) {
+				if(field.isAnnotationPresent(Transient.class)) {
+					continue;
+				}
+				
 				if(Modifier.isPrivate(field.getModifiers())) {
 					field.setAccessible(true);
 				}

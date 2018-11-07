@@ -27,10 +27,14 @@ final class JsonSerializer implements Serializer {
 	
 			Class objectName = obj.getClass();
 			Field[] fields = objectName.getDeclaredFields();
-			getTab(sb);
+			//getTab(sb);
 			sb.append("{\n");
 
 			for(Field field : fields) {
+				if(field.isAnnotationPresent(Transient.class)) {
+					continue;
+				}
+
 				if(Modifier.isPrivate(field.getModifiers())) {
 					field.setAccessible(true);
 				}
@@ -42,8 +46,11 @@ final class JsonSerializer implements Serializer {
 					sb.append("\"" + field.get(obj) + "\",\n");
 				}
 				else {
-					sb.setLength(sb.length() - 2);
-					sb.append("\n");
+					if (tabCounter != 0) {
+						sb.setLength(sb.length() - 2);
+					}
+					sb.append("\t\"" + field.getName() + "\" : ");
+					//sb.append("\n");
 					tabCounter++;
 					serialize((Serializable)field.get(obj), sb);
 				}
