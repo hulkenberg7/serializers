@@ -30,7 +30,8 @@ final class JsonSerializer implements Serializer {
 			//getTab(sb);
 			sb.append("{\n");
 
-			for(Field field : fields) {
+			for(int i = 0; i < fields.length; i++) {
+				Field field = fields[i];
 				if(field.isAnnotationPresent(Transient.class)) {
 					continue;
 				}
@@ -43,7 +44,13 @@ final class JsonSerializer implements Serializer {
 				if (!Serializable.class.isAssignableFrom(field.getType())) {
 					getTab(sb);
 					sb.append("\t\"" + field.getName() + "\" : ");
-					sb.append("\"" + field.get(obj) + "\",\n");
+					sb.append("\"" + field.get(obj) + "\"");
+
+					if (i != fields.length-1) {
+						sb.append(",");
+					}
+
+					sb.append("\n");
 				}
 				else {
 					if (tabCounter != 0) {
